@@ -2,35 +2,38 @@
     <div class="container">
         <div class="content">
             <div class="left">
-{{--                <a href="{{ route('get.static.customer_care') }}" title="Chăm sóc khách hàng" rel="nofollow">Chăm sóc khách hàng</a>--}}
-                 <a href="{{ route('get.user.transaction') }}" title="Kiểm tra đơn hàng" rel="nofollow">Kiểm tra đơn hàng</a>
+                {{--                <a href="{{ route('get.static.customer_care') }}" title="Chăm sóc khách hàng" rel="nofollow">Chăm sóc khách hàng</a> --}}
+                <a href="{{ route('get.user.transaction') }}" title="Kiểm tra đơn hàng" rel="nofollow">Kiểm tra đơn
+                    hàng</a>
             </div>
             <div class="right">
                 @if (Auth::check())
                     <a href="">Xin chào {{ Auth::user()->name }}</a>
-                    <a href="{{  route('get.user.dashboard') }}">Quản lý tài khoản</a>
-                    <a href="{{  route('get.logout') }}">Đăng xuất </a>
+                    <a href="{{ route('get.user.dashboard') }}">Quản lý tài khoản</a>
+                    <a href="{{ route('get.logout') }}">Đăng xuất </a>
                 @else
-                    <a href="{{  route('get.register') }}">Đăng ký</a>
-                    <a href="{{  route('get.login') }}">Đăng nhập</a>
+                    <a href="{{ route('get.register') }}">Đăng ký</a>
+                    <a href="{{ route('get.login') }}">Đăng nhập</a>
                 @endif
-             </div>
+            </div>
         </div>
     </div>
 </section>
-<section class="top-header mobile" style="background: {{ config('layouts.component.header-top.background') }} !important ">
+<section class="top-header mobile"
+    style="background: {{ config('layouts.component.header-top.background') }} !important ">
     <div class="container">
         <div class="content">
             <div class="left">
-{{--                <a href="{{ route('get.static.customer_care') }}" title="Chăm sóc khách hàng" rel="nofollow">Chăm sóc khách hàng</a>--}}
-                <a href="{{ route('get.user.transaction') }}" title="Kiểm tra đơn hàng" rel="nofollow">Kiểm tra đơn hàng</a>
+                {{--                <a href="{{ route('get.static.customer_care') }}" title="Chăm sóc khách hàng" rel="nofollow">Chăm sóc khách hàng</a> --}}
+                <a href="{{ route('get.user.transaction') }}" title="Kiểm tra đơn hàng" rel="nofollow">Kiểm tra đơn
+                    hàng</a>
                 @if (Auth::check())
                     <a href="">Xin chào {{ Auth::user()->name }}</a>
-                    <a href="{{  route('get.user.dashboard') }}">Quản lý tài khoản</a>
-                    <a href="{{  route('get.logout') }}">Đăng xuất </a>
+                    <a href="{{ route('get.user.dashboard') }}">Quản lý tài khoản</a>
+                    <a href="{{ route('get.logout') }}">Đăng xuất </a>
                 @else
-                    <a href="{{  route('get.register') }}">Đăng ký</a>
-                    <a href="{{  route('get.login') }}">Đăng nhập</a>
+                    <a href="{{ route('get.register') }}">Đăng ký</a>
+                    <a href="{{ route('get.login') }}">Đăng nhập</a>
                 @endif
             </div>
         </div>
@@ -49,8 +52,10 @@
             </div>
             <div class="search">
 
-                <form action="{{ $link_search ?? route('get.product.list',['k' => Request::get('k')]) }}" role="search" method="GET">
-                    <input type="text" name="k" value="{{ Request::get('k') }}" class="form-control" placeholder="Tìm kiếm sản phẩm ...">
+                <form action="{{ $link_search ?? route('get.product.list', ['k' => Request::get('k')]) }}"
+                    role="search" method="GET">
+                    <input type="text" name="k" value="{{ Request::get('k') }}" class="form-control"
+                        placeholder="Tìm kiếm sản phẩm ...">
                     <button type="submit" class="btnSearch">
                         <i class="fa fa-search"></i>
                         <span>Tìm kiếm</span>
@@ -69,13 +74,19 @@
                 </li>
                 <li class="desktop">
                     <a href="tel:18006005" title="" class="info-user js-show-dropdown">
-                        <img src="{{ asset('images/no-image.jpg') }}" alt="">
+                        @if (Auth::check() && Auth::user()->avatar)
+                            <img src="{{ pare_url_file(Auth::user()->avatar) }}" alt="Ảnh đại diện">
+                        @else
+                            <img src="{{ asset('images/no-image.jpg') }}" alt="Không có ảnh">
+                        @endif
+                        {{-- <img src="{{ asset('images/no-image.jpg') }}" alt=""> --}}
                         <span class="fa fa-angle-down"></span>
                     </a>
                     <ul class="header-menu-user">
-                        @foreach(config('user') as $item)
+                        @foreach (config('user') as $item)
                             <li>
-                                <a href="{{ route($item['route']) }}" class="{{ \Request::route()->getName() == $item['route'] ? 'active' : '' }}">
+                                <a href="{{ route($item['route']) }}"
+                                    class="{{ \Request::route()->getName() == $item['route'] ? 'active' : '' }}">
                                     <i class="{{ $item['icon'] }}"></i>
                                     <span>{{ $item['name'] }}</span>
                                 </a>
@@ -87,33 +98,33 @@
 
             <div id="menu-main" class="container" style="display: none">
                 <ul class="menu-list">
-                    @foreach($categories as $item)
-                    <li>
-                        <a href="{{  route('get.category.list', $item->c_slug.'-'.$item->id) }}"
-                           title="{{  $item->c_name }}" class="js-open-menu">
-                            <img src="{{ pare_url_file($item->c_avatar) }}" alt="{{ $item->c_name }}">
-                            <span>{{  $item->c_name }}</span>
+                    @foreach ($categories as $item)
+                        <li>
+                            <a href="{{ route('get.category.list', $item->c_slug . '-' . $item->id) }}"
+                                title="{{ $item->c_name }}" class="js-open-menu">
+                                <img src="{{ pare_url_file($item->c_avatar) }}" alt="{{ $item->c_name }}">
+                                <span>{{ $item->c_name }}</span>
+                                @if (isset($item->children) && count($item->children))
+                                    <span class="fa fa-angle-right"></span>
+                                @else
+                                    <span></span>
+                                @endif
+                            </a>
                             @if (isset($item->children) && count($item->children))
-                                <span class="fa fa-angle-right"></span>
-                            @else
-                                <span></span>
-                            @endif
-                        </a>
-                        @if (isset($item->children) && count($item->children))
-                        <div class="submenu">
-                            <div class="group">
-                                <div class="item">
-                                    @foreach($item->children as $children)
-                                        <a href="{{  route('get.category.list', $children->c_slug.'-'.$children->id) }}"
-                                           title="{{  $children->c_name }}" class="js-open-menu">
-                                            <span>{{  $children->c_name }}</span>
-                                        </a>
-                                    @endforeach
+                                <div class="submenu">
+                                    <div class="group">
+                                        <div class="item">
+                                            @foreach ($item->children as $children)
+                                                <a href="{{ route('get.category.list', $children->c_slug . '-' . $children->id) }}"
+                                                    title="{{ $children->c_name }}" class="js-open-menu">
+                                                    <span>{{ $children->c_name }}</span>
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        @endif
-                    </li>
+                            @endif
+                        </li>
                     @endforeach
                 </ul>
             </div>

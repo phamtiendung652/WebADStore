@@ -4,7 +4,7 @@
 @stop
 @section('content')
     <section>
-        <div class="title">Lịch sử login</div>
+        <div class="title">Lịch sử đăng nhập</div>
         <div class="content">
             <table class="table">
                 <thead>

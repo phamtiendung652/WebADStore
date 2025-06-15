@@ -10,11 +10,11 @@ return [
         'route' => 'get.user.transaction',
         'icon'  => 'fa fa-address-book-o'
     ],
-   [
-       'name'  => 'Biến động tài khoản',
-       'route' => 'get.user.management_transaction',
-       'icon'  => 'fa fa-money'
-   ],
+    // [
+    //     'name'  => 'Biến động tài khoản',
+    //     'route' => 'get.user.management_transaction',
+    //     'icon'  => 'fa fa-money'
+    // ],
     [
         'name'  => 'Sản phẩm yêu thích',
         'route' => 'get.user.favourite',
@@ -35,9 +35,9 @@ return [
         'route' => 'get.static.product_view',
         'icon'  => 'fa fa-eye'
     ],
-    [
-        'name'  => 'Log Login',
-        'route' => 'get.user.log_login',
-        'icon'  => 'fa fa-bug'
-    ],
+    // [
+    //     'name'  => 'Nhật Ký Đăng Nhập',
+    //     'route' => 'get.user.log_login',
+    //     'icon'  => 'fa fa-bug'
+    // ],
 ];
