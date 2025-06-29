@@ -52,25 +52,23 @@ class ShoppingCartController extends Controller
         }
 
         $check = $this->searchItemByIdCart($product->id);
-        if (($check + 1) > $product->pro_number )
-		{
-			\Session::flash('toastr', [
-				'type'    => 'error',
-				'message' => 'Số lượng sản phẩm không đủ'
-			]);
+        if (($check + 1) > $product->pro_number) {
+            \Session::flash('toastr', [
+                'type'    => 'error',
+                'message' => 'Số lượng sản phẩm không đủ'
+            ]);
 
-			return redirect()->back();
-		}
+            return redirect()->back();
+        }
 
-		if (($check + 1) > 10 )
-		{
-			\Session::flash('toastr', [
-				'type'    => 'error',
-				'message' => 'Mỗi sản phẩm chỉ mua được tối đa 10 sản phẩm'
-			]);
+        if (($check + 1) > 10) {
+            \Session::flash('toastr', [
+                'type'    => 'error',
+                'message' => 'Mỗi sản phẩm chỉ mua được tối đa 10 sản phẩm'
+            ]);
 
-			return redirect()->back();
-		}
+            return redirect()->back();
+        }
 
         // 3. Thêm sản phẩm vào giỏ hàng
         \Cart::add([
@@ -107,7 +105,8 @@ class ShoppingCartController extends Controller
 
             return redirect()->back();
         }
-        $data['tst_user_id'] = \Auth::user()->id;$data['tst_user_id'] = \Auth::user()->id;
+        $data['tst_user_id'] = \Auth::user()->id;
+        $data['tst_user_id'] = \Auth::user()->id;
         $data['tst_total_money'] = str_replace(',', '', \Cart::subtotal(0));
         $data['created_at']      = Carbon::now();
 
@@ -116,16 +115,16 @@ class ShoppingCartController extends Controller
         $data['options']['orders'] = $shopping;
 
         $options['drive'] = $request->pay;
-        if($request->pay == 'transfer')
-        {
+        if ($request->pay == 'transfer') {
             $data['tst_type'] = 2;
-            return $this->payOnline($request, $data,$shopping, $options);
-        }else{
-            try{
+            return $this->payOnline($request, $data, $shopping, $options);
+        } else {
+            $data['tst_type'] = 1;
+            try {
                 \Cart::destroy();
                 new PayManager($data, $shopping, $options);
-            }catch (\Exception $exception){
-                Log::error("[Errors pay shopping cart]" .$exception->getMessage());
+            } catch (\Exception $exception) {
+                Log::error("[Errors pay shopping cart]" . $exception->getMessage());
             }
 
             \Session::flash('toastr', [
@@ -148,10 +147,8 @@ class ShoppingCartController extends Controller
         $transactionID = $request->vnp_TxnRef;
         $transaction = Transaction::find($transactionID);
 
-        if ($request->vnp_ResponseCode == '00')
-        {
-            if ($transaction)
-            {
+        if ($request->vnp_ResponseCode == '00') {
+            if ($transaction) {
                 \Cart::destroy();
                 $transaction->tst_status = Transaction::STATUS_SUCCESS;
                 $transaction->save();
@@ -163,7 +160,7 @@ class ShoppingCartController extends Controller
                 return redirect()->to('/');
             }
 
-            return redirect()->to('/')->with('danger','Mã đơn hàng không tồn tại');
+            return redirect()->to('/')->with('danger', 'Mã đơn hàng không tồn tại');
         }
 
         if ($transaction)  $transaction->delete();
@@ -225,7 +222,7 @@ class ShoppingCartController extends Controller
             "vnp_CurrCode"   => "VND",
             "vnp_IpAddr"     => $_SERVER['REMOTE_ADDR'], // IP
             "vnp_Locale"     => 'vi', // ngon ngu,
-            "vnp_OrderInfo"  => 'Thanh toán Onlinr', // noi dung thanh toan,
+            "vnp_OrderInfo"  => 'Thanh toán Online', // noi dung thanh toan,
             "vnp_OrderType"  => 'billpayment',    // loai hinh thanh toan
             "vnp_ReturnUrl"  => $this->vnp_Returnurl,   // duong dan tra ve
             "vnp_TxnRef"     => $this->idTransaction, // ma don hang,
@@ -266,25 +263,23 @@ class ShoppingCartController extends Controller
 
 
     protected function searchItemByIdCart($productID)
-	{
-		$shopping = \Cart::content();
+    {
+        $shopping = \Cart::content();
 
-		foreach ($shopping as $item)
-		{
-			if ($item->id == $productID)
-				return $item->qty;
-		}
+        foreach ($shopping as $item) {
+            if ($item->id == $productID)
+                return $item->qty;
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
     /**
      *  Xoá sản phẩm đơn hang
      * */
     public function delete(Request $request, $rowId)
     {
-        if ($request->ajax())
-        {
+        if ($request->ajax()) {
             \Cart::remove($rowId);
             return response([
                 'totalMoney' => \Cart::subtotal(0),

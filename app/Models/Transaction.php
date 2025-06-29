@@ -39,16 +39,16 @@ class Transaction extends Model
 
     public function getStatus()
     {
-        return Arr::get($this->status, $this->tst_status,"[N\A]");
+        return Arr::get($this->status, $this->tst_status, "[N\A]");
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class,'tst_user_id','id');
+        return $this->belongsTo(User::class, 'tst_user_id', 'id');
     }
 
-	public function admin()
-	{
-		return $this->belongsTo(Admin::class,'tst_admin_id','id');
-	}
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'tst_admin_id', 'id');
+    }
 }

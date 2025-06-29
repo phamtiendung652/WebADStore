@@ -26,7 +26,7 @@
                                     <th style="width: 10px">ID</th>
                                     <th>Name</th>
                                     <th>Type</th>
-                                    <th>Category</th>
+                                    {{-- <th>Category</th> --}}
                                     <th>Time</th>
                                     <th>Action</th>
                                 </tr>
@@ -40,9 +40,9 @@
                                                 <span class="{{ $attribute->getType($attribute->atb_type)['class'] }}" 
                                                 >{{ $attribute->getType($attribute->atb_type)['name'] }}</span>
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <span class="label label-info">{{ $attribute->category->c_name ?? "[N\A]" }}</span>
-                                            </td>
+                                            </td> --}}
                                             <td>{{  $attribute->created_at }}</td>
                                             <td>
                                                 <a href="{{ route('admin.attribute.update', $attribute->id) }}" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Edit</a>

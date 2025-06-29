@@ -272,14 +272,7 @@
                                 Thanh toán Online
                             </button>
                         </div>
-                        {{-- <div class="btn-buy">
-                            <button class="buy1 btn btn-purple {{ \Auth::id() ? '' : 'js-show-login' }}" style="width: 100%" type="submit" name="pay" value="online">
-                                Thanh toán khi nhận hàng
-                            </button>
-                            <button class="buy1 btn btn-primary {{ \Auth::id() ? '' : 'js-show-login' }}" style="width: 100%;margin-top: 20px" type="submit" name="pay" value="transfer">
-                                Thanh toán Online
-                            </button>
-                        </div> --}}
+
                     </form>
                 </div>
             </div>

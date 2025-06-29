@@ -87,7 +87,8 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <select name="" id=""></select>
+                                                {{-- <select name="" id=""></select> --}}
+                                                <span>{{ $transaction->tst_type }}</span>
                                             </td>
                                             <td>{{ $transaction->created_at }}</td>
                                             <td>
