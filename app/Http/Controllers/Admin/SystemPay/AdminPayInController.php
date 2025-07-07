@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminRequestPayIn;
 use App\Models\SystemPay\PayHistory;
 use App\Models\SystemPay\PayIn;
-use App\User;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 

@@ -9,5 +9,5 @@ class PayOut extends Model
     protected $guarded = [''];
     protected $table = 'pay_outs';
 
-    const STATUS_SUCCESS = 1;
+    const STATUS_DEFAULT = 1;
 }

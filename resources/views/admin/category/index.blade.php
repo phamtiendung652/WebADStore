@@ -5,7 +5,7 @@
         <h1>Quản lý danh mục sản phẩm</h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="{{  route('admin.category.index') }}"> Category</a></li>
+            <li><a href="{{ route('admin.category.index') }}"> Category</a></li>
             <li class="active"> List </li>
         </ol>
     </section>
@@ -15,10 +15,11 @@
         <div class="box">
             <div class="box-header with-border">
                 <div class="box-header">
-                    <h3 class="box-title"><a href="{{ route('admin.category.create') }}" class="btn btn-primary">Thêm mới <i class="fa fa-plus"></i></a></h3>
-               </div>
+                    <h3 class="box-title"><a href="{{ route('admin.category.create') }}" class="btn btn-primary">Thêm mới <i
+                                class="fa fa-plus"></i></a></h3>
+                </div>
                 <div class="box-body">
-                   <div class="col-md-12">
+                    <div class="col-md-12">
                         <table class="table">
                             <tbody>
                                 <tr>
@@ -31,32 +32,47 @@
                                     <th>Action</th>
                                 </tr>
                                 @if ($categories)
-                                    @foreach($categories as $key => $category)
+                                    @foreach ($categories as $key => $category)
                                         <tr>
-                                            <td>{{ (($categories->currentPage() - 1) * $categories->perPage()) + ( $key + 1)  }}</td>
+                                            <td>{{ ($categories->currentPage() - 1) * $categories->perPage() + ($key + 1) }}
+                                            </td>
                                             <td>{{ $category->c_name }}</td>
                                             <td>
-                                                <img src="{{ pare_url_file($category->c_avatar ?? '') ?? '/images/no-image.jpg' }}" onerror="this.onerror=null;this.src='/images/no-image.jpg';"
-                                                     alt="" class="img-thumbnail" style="width: 80px;height: 80px;">
+                                                <img src="{{ pare_url_file($category->c_avatar ?? '') ?? '/images/no-image.jpg' }}"
+                                                    onerror="this.onerror=null;this.src='/images/no-image.jpg';"
+                                                    alt="" class="img-thumbnail" style="width: 80px;height: 80px;">
                                             </td>
                                             <td>
                                                 @if ($category->c_status == 1)
-                                                    <a href="{{ route('admin.category.active', $category->id) }}" class="label label-info">Hiển thị</a>
+                                                    <a href="{{ route('admin.category.active', $category->id) }}"
+                                                        class="label label-info">Hiển thị</a>
                                                 @else
-                                                    <a href="{{ route('admin.category.active', $category->id) }}" class="label label-default">Ẩn</a>
+                                                    <a href="{{ route('admin.category.active', $category->id) }}"
+                                                        class="label label-default">Ẩn</a>
                                                 @endif
                                             </td>
                                             <td>
                                                 @if ($category->c_hot == 1)
-                                                    <a href="{{ route('admin.category.hot', $category->id) }}" class="label label-info">Mặc định</a>
+                                                    <a href="{{ route('admin.category.hot', $category->id) }}"
+                                                        class="label label-info">Mặc định</a>
                                                 @else
-                                                    <a href="{{ route('admin.category.hot', $category->id) }}" class="label label-default">Nổi bật</a>
+                                                    <a href="{{ route('admin.category.hot', $category->id) }}"
+                                                        class="label label-default">Nổi bật</a>
                                                 @endif
                                             </td>
-                                            <td>{{  $category->created_at }}</td>
                                             <td>
-                                                <a href="{{ route('admin.category.update', $category->id) }}" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Edit</a>
-                                                <a href="{{  route('admin.category.delete', $category->id) }}" class="btn btn-xs btn-danger js-delete-confirm"><i class="fa fa-trash"></i> Delete</a>
+                                                @if ($category->updated_at && $category->updated_at != $category->created_at)
+                                                    {{ $category->updated_at }}
+                                                @else
+                                                    {{ $category->created_at }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('admin.category.update', $category->id) }}"
+                                                    class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+                                                <a href="{{ route('admin.category.delete', $category->id) }}"
+                                                    class="btn btn-xs btn-danger js-delete-confirm"><i
+                                                        class="fa fa-trash"></i> Delete</a>
                                             </td>
                                         </tr>
                                     @endforeach

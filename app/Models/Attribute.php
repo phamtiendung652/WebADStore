@@ -35,8 +35,8 @@ class Attribute extends Model
 		return $that->type;
 	}
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class,'atb_category_id');
-    }
+    // public function category()
+    // {
+    //     return $this->belongsTo(Category::class,'atb_category_id');
+    // }
 }

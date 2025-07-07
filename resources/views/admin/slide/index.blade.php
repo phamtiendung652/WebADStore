@@ -46,7 +46,13 @@
                                             </td>
                                             <td>{{  $slide->sd_sort }}</td>
                                             <td>{{  $slide->sd_target }}</td>
-                                            <td>{{  $slide->created_at }}</td>
+                                            <td>
+                                                @if ($slide->updated_at && $slide->updated_at != $slide->created_at)
+                                                {{ $slide->updated_at }}
+                                            @else
+                                                {{ $slide->created_at }}
+                                            @endif
+                                            </td>
                                             <td>
                                                 <a href="{{ route('admin.slide.update', $slide->id) }}" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Edit</a>
                                                 <a href="{{  route('admin.slide.delete', $slide->id) }}" class="btn btn-xs btn-danger js-delete-confirm"><i class="fa fa-trash"></i> Delete</a>

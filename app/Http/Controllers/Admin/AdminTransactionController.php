@@ -15,26 +15,35 @@ class AdminTransactionController extends Controller
     {
         $transactions = Transaction::whereRaw(1);
 
-        if ($request->id) $transactions->where('id',$request->id);
+        if ($request->id) $transactions->where('id', $request->id);
         if ($email = $request->email) {
-            $transactions->where('tst_email','like','%'.$email.'%');
+            $transactions->where('tst_email', 'like', '%' . $email . '%');
         }
 
         if ($type = $request->type) {
-            if ($type == 1)
-            {
-                $transactions->where('tst_user_id','<>',0);
-            }else {
-                $transactions->where('tst_user_id',0);
+            if ($type == 1) {
+                $transactions->where('tst_user_id', '<>', 0);
+            } else {
+                $transactions->where('tst_user_id', 0);
             }
         }
 
         if ($status = $request->status) {
-            $transactions->where('tst_status',$status);
+            $transactions->where('tst_status', $status);
         }
 
-        $transactions = $transactions->orderByDesc('id')
-                            ->paginate(10);
+        // Sắp xếp ưu tiên status: 1 (mới), sau đó đến 2 (đang xử lý), 3 (thành công), 4 (đã giao hàng)
+        // Các trạng thái khác (ví dụ: -1 - hủy) sẽ nằm sau cùng
+        $transactions = $transactions->orderByRaw('CASE 
+                                                    WHEN tst_status = 1 THEN 0 
+                                                    WHEN tst_status = 2 THEN 1 
+                                                    WHEN tst_status = 3 THEN 2 
+                                                    WHEN tst_status = 4 THEN 3 
+                                                    ELSE 4 
+                                                END')
+            ->orderByDesc('id') // Sau đó sắp xếp theo ID giảm dần để giữ thứ tự trong cùng một nhóm status
+            ->paginate(10);
+
         if ($request->export) {
             // Gọi thới export excel 
             return \Excel::download(new TransactionExport($transactions), 'don-hang.xlsx');
@@ -56,11 +65,11 @@ class AdminTransactionController extends Controller
                 ->get();
 
             $html = view("components.orders", compact('orders'))->render();
-            
+
             return response([
                 'html' => $html
-            ]);    
-        }    
+            ]);
+        }
     }
 
     public function deleteOrderItem(Request $request, $id)
@@ -110,48 +119,80 @@ class AdminTransactionController extends Controller
 
                 case 'cancel':
                     $transaction->tst_status = -1;
-//                    $this->syncIncrementProduct($id);
+                    //                    $this->syncIncrementProduct($id);
                     break;
             }
-			$transaction->tst_admin_id = get_data_user('admins');
+            $transaction->tst_admin_id = get_data_user('admins');
             $transaction->save();
         }
 
-        if ($request->ajax())
-		{
-			return response()->json(['code' => 200]);
-		}
+        if ($request->ajax()) {
+            return response()->json(['code' => 200]);
+        }
 
         return redirect()->back();
     }
 
     protected function syncIncrementProduct($transactionID)
-	{
-		$orders = Order::where('od_transaction_id', $transactionID)
-			->get();
-		if ($orders)
-		{
-			foreach ($orders as $order)
-			{
-				\DB::table('products')
-					->where('id', $order->od_product_id)
-					->increment("pro_number",$order->od_qty);
-			}
-		}
-	}
+    {
+        $orders = Order::where('od_transaction_id', $transactionID)
+            ->get();
+        if ($orders) {
+            foreach ($orders as $order) {
+                \DB::table('products')
+                    ->where('id', $order->od_product_id)
+                    ->increment("pro_number", $order->od_qty);
+            }
+        }
+    }
 
-	protected function syncDecrementProduct($transactionID)
-	{
-		$orders = Order::where('od_transaction_id', $transactionID)
-			->get();
-		if ($orders)
-		{
-			foreach ($orders as $order)
-			{
-				\DB::table('products')
-					->where('id', $order->od_product_id)
-					->decrement("pro_number",$order->od_qty);
-			}
-		}
-	}
+    protected function syncDecrementProduct($transactionID)
+    {
+        $orders = Order::where('od_transaction_id', $transactionID)
+            ->get();
+        if ($orders) {
+            foreach ($orders as $order) {
+                \DB::table('products')
+                    ->where('id', $order->od_product_id)
+                    ->decrement("pro_number", $order->od_qty);
+            }
+        }
+    }
 }
+
+// public function index(Request $request)
+    // {
+    //     $transactions = Transaction::whereRaw(1);
+
+    //     if ($request->id) $transactions->where('id',$request->id);
+    //     if ($email = $request->email) {
+    //         $transactions->where('tst_email','like','%'.$email.'%');
+    //     }
+
+    //     if ($type = $request->type) {
+    //         if ($type == 1)
+    //         {
+    //             $transactions->where('tst_user_id','<>',0);
+    //         }else {
+    //             $transactions->where('tst_user_id',0);
+    //         }
+    //     }
+
+    //     if ($status = $request->status) {
+    //         $transactions->where('tst_status',$status);
+    //     }
+
+    //     $transactions = $transactions->orderByDesc('id')
+    //                         ->paginate(10);
+    //     if ($request->export) {
+    //         // Gọi thới export excel 
+    //         return \Excel::download(new TransactionExport($transactions), 'don-hang.xlsx');
+    //     }
+
+    //     $viewData = [
+    //         'transactions' => $transactions,
+    //         'query'        => $request->query()
+    //     ];
+
+    //     return view('admin.transaction.index', $viewData);
+    // }

@@ -5,7 +5,7 @@
         <h1>Quản lý thông tin</h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="{{  route('admin.attribute.index') }}"> Attribute</a></li>
+            <li><a href="{{ route('admin.attribute.index') }}"> Attribute</a></li>
             <li class="active"> List </li>
         </ol>
     </section>
@@ -15,15 +15,16 @@
         <div class="box">
             <div class="box-header with-border">
                 <div class="box-header">
-                    <h3 class="box-title"><a href="{{ route('admin.attribute.create') }}" class="btn btn-primary">Thêm mới <i class="fa fa-plus"></i></a></h3>
-               </div>
+                    <h3 class="box-title"><a href="{{ route('admin.attribute.create') }}" class="btn btn-primary">Thêm mới
+                            <i class="fa fa-plus"></i></a></h3>
+                </div>
                 <div class="box-body">
-                   <div class="col-md-12">
+                    <div class="col-md-12">
                         <table class="table">
                             <tbody>
                                 <tr>
                                     <th style="width: 10px">STT</th>
-                                    <th style="width: 10px">ID</th>
+                                    {{-- <th style="width: 10px">ID</th> --}}
                                     <th>Name</th>
                                     <th>Type</th>
                                     {{-- <th>Category</th> --}}
@@ -31,22 +32,32 @@
                                     <th>Action</th>
                                 </tr>
                                 @if (isset($attibutes))
-                                    @foreach($attibutes as $key => $attribute)
+                                    @foreach ($attibutes as $key => $attribute)
                                         <tr>
-                                            <td>{{ ($key + 1 ) }}</td>
-                                            <td>{{ $attribute->id }}</td>
+                                            <td>{{ $key + 1 }}</td>
+                                            {{-- <td>{{ $attribute->id }}</td> --}}
                                             <td>{{ $attribute->atb_name }}</td>
                                             <td>
-                                                <span class="{{ $attribute->getType($attribute->atb_type)['class'] }}" 
-                                                >{{ $attribute->getType($attribute->atb_type)['name'] }}</span>
+                                                <span
+                                                    class="{{ $attribute->getType($attribute->atb_type)['class'] }}">{{ $attribute->getType($attribute->atb_type)['name'] }}</span>
                                             </td>
                                             {{-- <td>
                                                 <span class="label label-info">{{ $attribute->category->c_name ?? "[N\A]" }}</span>
                                             </td> --}}
-                                            <td>{{  $attribute->created_at }}</td>
                                             <td>
-                                                <a href="{{ route('admin.attribute.update', $attribute->id) }}" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Edit</a>
-                                                <a href="{{  route('admin.attribute.delete', $attribute->id) }}" class="btn btn-xs btn-danger js-delete-confirm"><i class="fa fa-trash"></i> Delete</a>
+                                                @if ($attribute->updated_at && $attribute->updated_at != $attribute->created_at)
+                                                    {{ $attribute->updated_at }}
+                                                @else
+                                                    {{ $attribute->created_at }}
+                                                @endif
+                                            </td>
+
+                                            <td>
+                                                <a href="{{ route('admin.attribute.update', $attribute->id) }}"
+                                                    class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+                                                <a href="{{ route('admin.attribute.delete', $attribute->id) }}"
+                                                    class="btn btn-xs btn-danger js-delete-confirm"><i
+                                                        class="fa fa-trash"></i> Delete</a>
                                             </td>
                                         </tr>
                                     @endforeach

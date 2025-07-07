@@ -14,48 +14,45 @@ class AdminAttributeController extends Controller
 {
     public function index()
     {
-        $attibutes = Attribute::with('category:id,c_name')->orderByDesc('id')
+        // $attibutes = Attribute::orderByDesc('id')->get(); 
+        $attibutes = Attribute::orderByRaw('CASE WHEN atb_type = 2 THEN 0 WHEN atb_type = 3 THEN 1 ELSE 2 END')
+            ->orderByDesc('id')
             ->get();
-
         $viewData = [
             'attibutes' => $attibutes
         ];
 
         return view('admin.attribute.index', $viewData);
     }
-
     public function create()
     {
-        $categories = Category::select('id','c_name')->get();
         $attribute_type = Attribute::getListType();
-
-        return view('admin.attribute.create',compact('categories','attribute_type'));
-    }
-
-    public function store(AdminRequestAttribute $request)
-    {
-        $data = $request->except('_token');
-        $data['atb_slug']     = Str::slug($request->atb_name);
-        $data['created_at'] = Carbon::now();
-
-        $id = Attribute::insertGetId($data);
-        return redirect()->back();
+        return view('admin.attribute.create', compact('attribute_type'));
     }
 
     public function edit($id)
     {
         $attribute = Attribute::find($id);
-        $categories = Category::select('id','c_name')->get();
-		$attribute_type = Attribute::getListType();
-        return view('admin.attribute.update', compact('attribute','categories','attribute_type'));
+        $attribute_type = Attribute::getListType();
+        return view('admin.attribute.update', compact('attribute', 'attribute_type'));
     }
+    public function store(AdminRequestAttribute $request)
+    {
+        $data = $request->except('_token');
+        $data['atb_slug']   = Str::slug($request->atb_name);
+        $data['created_at'] = Carbon::now();
+
+        $id = Attribute::insertGetId($data);
+        return redirect()->back()->with('success', 'Thuộc tính đã được thêm mới thành công!');
+    }
+
 
     public function update(AdminRequestAttribute $request, $id)
     {
         $attribute          = Attribute::find($id);
         $data               = $request->except('_token');
         $data['atb_slug']   = Str::slug($request->atb_name);
-        $data['updated_at'] = Carbon::now(); 
+        $data['updated_at'] = Carbon::now();
 
         $attribute->update($data);
         return redirect()->back();
@@ -69,3 +66,42 @@ class AdminAttributeController extends Controller
         return redirect()->back();
     }
 }
+
+    // public function index()
+    // {
+    //     $attibutes = Attribute::with('category:id,c_name')->orderByDesc('id')
+    //         ->get();
+
+    //     $viewData = [
+    //         'attibutes' => $attibutes
+    //     ];
+
+    //     return view('admin.attribute.index', $viewData);
+    // }
+
+    // public function create()
+    // {
+    //     // $categories = Category::select('id','c_name')->get();
+    //     $attribute_type = Attribute::getListType();
+
+    //     return view('admin.attribute.create',compact('categories','attribute_type'));
+    // }
+
+    // public function store(AdminRequestAttribute $request)
+    // {
+    //     $data = $request->except('_token');
+    //     $data['atb_slug']     = Str::slug($request->atb_name);
+    //     $data['created_at'] = Carbon::now();
+    //     $data['category_id'] = 1;
+
+    //     $id = Attribute::insertGetId($data);
+    //     return redirect()->back();
+    // }
+
+    // public function edit($id)
+    // {
+    //     $attribute = Attribute::find($id);
+    //     $categories = Category::select('id','c_name')->get();
+    // 	$attribute_type = Attribute::getListType();
+    //     return view('admin.attribute.update', compact('attribute','categories','attribute_type'));
+    // }

@@ -19,9 +19,9 @@ class BlogMenuController extends BlogBaseController
                 'a_active'  => 1,
                 'a_menu_id' => $id
             ])
-            ->select('id','a_name','a_slug','a_description','a_avatar')
-            ->orderByDesc('id')
-            ->paginate(10);
+                ->select('id', 'a_name', 'a_slug', 'a_description', 'a_avatar', 'created_at', 'updated_at')
+                ->orderByDesc('id')
+                ->paginate(10);
 
             $menu = Menu::find($id);
 

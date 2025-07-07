@@ -10,10 +10,11 @@
         <div class="box">
             <div class="box-header with-border">
                 <div class="box-header">
-                    <h3 class="box-title"><a href="{{ route('admin.static.create') }}" class="btn btn-primary">Thêm mới <i class="fa fa-plus"></i></a></h3>
-               </div>
+                    <h3 class="box-title"><a href="{{ route('admin.static.create') }}" class="btn btn-primary">Thêm mới <i
+                                class="fa fa-plus"></i></a></h3>
+                </div>
                 <div class="box-body">
-                   <div class="col-md-12">
+                    <div class="col-md-12">
                         <table class="table">
                             <tbody>
                                 <tr>
@@ -25,16 +26,25 @@
                                     <th>Action</th>
                                 </tr>
                                 @if (isset($statics))
-                                    @foreach($statics as $key => $static)
+                                    @foreach ($statics as $key => $static)
                                         <tr>
-                                            <td>{{ ($key + 1) }}</td>
+                                            <td>{{ $key + 1 }}</td>
                                             <td>{{ $static->id }}</td>
                                             <td>{{ $static->s_title }}</td>
                                             <td>{{ $static->getType($static->s_type) }}</td>
-                                            <td>{{  $static->created_at }}</td>
                                             <td>
-                                                <a href="{{ route('admin.static.update', $static->id) }}" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Edit</a>
-                                                <a href="{{  route('admin.static.delete', $static->id) }}" class="btn btn-xs btn-danger js-delete-confirm"><i class="fa fa-trash"></i> Delete</a>
+                                                @if ($static->updated_at && $static->updated_at != $static->created_at)
+                                                    {{ $static->updated_at }}
+                                                @else
+                                                    {{ $static->created_at }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('admin.static.update', $static->id) }}"
+                                                    class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+                                                <a href="{{ route('admin.static.delete', $static->id) }}"
+                                                    class="btn btn-xs btn-danger js-delete-confirm"><i
+                                                        class="fa fa-trash"></i> Delete</a>
                                             </td>
                                         </tr>
                                     @endforeach

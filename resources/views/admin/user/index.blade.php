@@ -19,11 +19,12 @@
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th style="width: 10px">Stt</th>
+                                    <th style="width: 10px">STT</th>
                                     <th style="width: 10px">ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
+                                    <th>Status</th>
                                     <th>Time</th>
                                     <th>Action</th>
                                 </tr>
@@ -31,17 +32,41 @@
                                     @foreach ($users as $key => $user)
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
-                                            <td>KH{{ $user->id }}</td>      
+                                            <td>{{ $user->id }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->phone }}</td>
-                                            <td>{{ $user->created_at }}</td>
+                                            <td>
+                                                @if ($user->status == 1)
+                                                    <span class="label label-success">Hoạt động</span>
+                                                @else
+                                                    <span class="label label-danger">Ngưng hoạt động</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($user->updated_at && $user->updated_at != $user->created_at)
+                                                    {{ $user->updated_at }}
+                                                @else
+                                                    {{ $user->created_at }}
+                                                @endif
+                                            </td>
                                             <td>
                                                 <a href="{{ route('admin.user.transaction', $user->id) }}"
                                                     class="btn btn-xs btn-primary js-show-transaction"> Nợ cần thu</a>
-                                                <a href="{{ route('admin.user.delete', $user->id) }}"
+                                                {{-- <a href="{{ route('admin.user.delete', $user->id) }}"
                                                     class="btn btn-xs btn-danger js-delete-confirm"><i
-                                                        class="fa fa-trash"></i> Delete</a>
+                                                        class="fa fa-trash"></i> Delete</a> --}}
+                                                {{-- <a href="" class="btn btn-xs btn-danger js-delete-confirm"><i
+                                                        class="fa fa-trash"></i>Ngưng HD</a> --}}
+                                                @if ($user->status == 1)
+                                                    {{-- Link để ngưng hoạt động (status = 0) --}}
+                                                    <a href="{{ route('admin.user.change_status', ['id' => $user->id, 'status' => 0]) }}"
+                                                        class="btn btn-xs btn-warning">Ngưng HD</a>
+                                                @else
+                                                    {{-- Link để kích hoạt lại (status = 1) --}}
+                                                    <a href="{{ route('admin.user.change_status', ['id' => $user->id, 'status' => 1]) }}"
+                                                        class="btn btn-xs btn-info">Kích hoạt</a>
+                                                @endif
                                                 <a href="#" class="btn btn-xs btn-primary">View</a>
                                             </td>
                                         </tr>

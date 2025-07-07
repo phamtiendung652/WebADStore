@@ -54,7 +54,7 @@ class PayOnlinePaymentService extends PayBaseService implements PayServiceInterf
     public function saveTransaction()
     {
         $dataTransaction             = $this->getDataTransaction($this->data);
-        $dataTransaction['tst_type'] = Transaction::TYPE_ONLINE;
+        // $dataTransaction['tst_type'] = Transaction::TYPE_ONLINE;
 
         //1. Lưu đơn hàng
         $this->idTransaction = Transaction::insertGetId($dataTransaction);
@@ -84,7 +84,7 @@ class PayOnlinePaymentService extends PayBaseService implements PayServiceInterf
     public function savePayOut($money, $userId, $transactionID)
     {
         $dataPayOut = [
-            'po_status'         => PayOut::STATUS_SUCCESS,
+            'po_status'         => PayOut::STATUS_DEFAULT,
             'po_month'          => date('m'),
             'po_transaction_id' => $transactionID,
             'po_year'           => date('Y'),

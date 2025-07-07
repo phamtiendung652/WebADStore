@@ -15,9 +15,9 @@ class BlogController extends BlogBaseController
         $articles = Article::where([
             'a_active' => 1
         ])
-        ->select('id','a_name','a_slug','a_description','a_avatar')
-        ->orderByDesc('id')
-        ->paginate(10);
+            ->select('id', 'a_name', 'a_slug', 'a_description', 'a_avatar', 'created_at', 'updated_at')
+            ->orderByDesc('id')
+            ->paginate(10);
 
 
         //Bài viết nổi bật trung tâm
@@ -25,10 +25,10 @@ class BlogController extends BlogBaseController
             'a_active'     => 1,
             'a_position_1' => 1
         ])
-        ->select('id','a_name','a_slug','a_description','a_avatar')
-        ->orderByDesc('id')
-        ->limit(5)
-        ->get();
+            ->select('id', 'a_name', 'a_slug', 'a_description', 'a_avatar', 'created_at', 'updated_at')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get();
 
 
 

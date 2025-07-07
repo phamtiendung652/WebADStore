@@ -55,7 +55,7 @@
                                     <th>Money</th>
                                     <th>Account</th>
                                     <th>Status</th>
-                                    <th>Shipper</th>
+                                    {{-- <th>Shipper</th> --}}
                                     <th>Time</th>
                                     <th>Action</th>
                                 </tr>
@@ -85,10 +85,6 @@
                                                     class="label label-{{ $transaction->getStatus($transaction->tst_status)['class'] }}">
                                                     {{ $transaction->getStatus($transaction->tst_status)['name'] }}
                                                 </span>
-                                            </td>
-                                            <td>
-                                                {{-- <select name="" id=""></select> --}}
-                                                <span>{{ $transaction->tst_type }}</span>
                                             </td>
                                             <td>{{ $transaction->created_at }}</td>
                                             <td>
@@ -122,11 +118,13 @@
                                                                     href="{{ route('admin.action.transaction', ['success', $transaction->id]) }}"><i
                                                                         class="fa fa-check-circle"></i> Đã bàn giao</a>
                                                             </li>
-                                                            <li>
-                                                                <a
-                                                                    href="{{ route('admin.action.transaction', ['cancel', $transaction->id]) }}"><i
-                                                                        class="fa fa-ban"></i> Huỷ</a>
-                                                            </li>
+                                                            @if ($transaction->tst_type == 1)
+                                                                <li>
+                                                                    <a
+                                                                        href="{{ route('admin.action.transaction', ['cancel', $transaction->id]) }}"><i
+                                                                            class="fa fa-ban"></i> Huỷ</a>
+                                                                </li>
+                                                            @endif
                                                         </ul>
                                                     </div>
                                                 @endif

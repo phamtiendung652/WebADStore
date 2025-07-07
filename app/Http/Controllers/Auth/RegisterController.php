@@ -56,6 +56,7 @@ class RegisterController extends Controller
         $data               = $request->except("_token");
         $data['password']   =  Hash::make($data['password']);
         $data['created_at'] = Carbon::now();
+        $data['status'] = 1;
         $id = User::insertGetId($data);
 
         if ($id) {

@@ -42,4 +42,36 @@ class AdminUserController extends Controller
 
         return redirect()->back();
     }
+    public function changeStatus($id, $status)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            \Session::flash('toastr', [
+                'type'    => 'error',
+                'message' => 'Không tìm thấy người dùng.'
+            ]);
+            return redirect()->back();
+        }
+
+        // Đảm bảo status là 0 hoặc 1
+        if (!in_array($status, [0, 1])) {
+            \Session::flash('toastr', [
+                'type'    => 'error',
+                'message' => 'Trạng thái không hợp lệ.'
+            ]);
+            return redirect()->back();
+        }
+
+        $user->status = $status;
+        $user->save();
+
+        $message = ($status == 0) ? 'Tài khoản người dùng đã được ngưng hoạt động.' : 'Tài khoản người dùng đã được kích hoạt lại.';
+        \Session::flash('toastr', [
+            'type'    => 'success',
+            'message' => $message
+        ]);
+
+        return redirect()->back();
+    }
 }

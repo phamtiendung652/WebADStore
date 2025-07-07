@@ -97,7 +97,7 @@ Route::group(['prefix' => 'api-admin', 'namespace' => 'Admin', 'middleware' => '
 
         Route::get('update/{id}', 'AdminUserController@edit')->name('admin.user.update');
         Route::post('update/{id}', 'AdminUserController@update');
-
+        Route::get('{id}/status/{status}', 'AdminUserController@changeStatus')->name('admin.user.change_status');
         Route::get('delete/{id}', 'AdminUserController@delete')->name('admin.user.delete');
         Route::get('ajax/transaction/{userId}', 'AdminUserController@transaction')->name('admin.user.transaction');
     });

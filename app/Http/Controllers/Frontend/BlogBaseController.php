@@ -16,13 +16,13 @@ class BlogBaseController extends Controller
             ->where([
                 'pro_active' => 1,
             ])
-            ->where('pro_pay','>',0)
+            ->where('pro_pay', '>', 0)
             ->orderByDesc('pro_pay')
             ->limit(5)
-            ->select('id','pro_name','pro_slug','pro_sale','pro_avatar','pro_price','pro_category_id')
+            ->select('id', 'pro_name', 'pro_slug', 'pro_sale', 'pro_avatar', 'pro_price', 'pro_category_id')
             ->get();
 
-            return $productsPay;
+        return $productsPay;
     }
 
     public function getArticleTopSidebar()
@@ -31,10 +31,10 @@ class BlogBaseController extends Controller
             'a_active'     => 1,
             'a_position_2' => 1
         ])
-        ->select('id','a_name','a_slug','a_description','a_avatar')
-        ->orderByDesc('id')
-        ->limit(5)
-        ->get();
+            ->select('id', 'a_name', 'a_slug', 'a_description', 'a_avatar', 'created_at', 'updated_at')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get();
     }
 
     /**
@@ -46,10 +46,8 @@ class BlogBaseController extends Controller
             'a_active' => 1,
             'a_hot'    => 1
         ])
-        ->select('id','a_name','a_slug','a_description','a_avatar')
-        ->orderByDesc('id')
-        ->get(6);
+            ->select('id', 'a_name', 'a_slug', 'a_description', 'a_avatar', 'created_at', 'updated_at')
+            ->orderByDesc('id')
+            ->get(6);
     }
 }
-
-

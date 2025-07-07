@@ -180,7 +180,7 @@
         <!-- /.content-wrapper -->
         <footer class="main-footer">
 
-            <strong>A&D Store @Copyright 2025 </strong>
+            <strong>A&D Store Đồ án tốt nghiệp</strong>
         </footer>
         <div class="control-sidebar-bg"></div>
     </div>

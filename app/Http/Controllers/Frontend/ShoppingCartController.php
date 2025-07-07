@@ -150,10 +150,10 @@ class ShoppingCartController extends Controller
         if ($request->vnp_ResponseCode == '00') {
             if ($transaction) {
                 \Cart::destroy();
-                $transaction->tst_status = Transaction::STATUS_SUCCESS;
+                $transaction->tst_status = Transaction::STATUS_DEFAULT;
                 $transaction->save();
                 \Session::flash('toastr', [
-                    'type'    => 'success',
+                    'type'    => 'default',
                     'message' => 'Thanh toán thành công'
                 ]);
 
