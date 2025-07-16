@@ -272,13 +272,13 @@
                         <div class="btn-buy">
                             <button
                                 class="buy1 btn btn-purple {{ \Auth::id() ? '' : 'js-show-login' }} js-show-payment-confirm"
-                                style="width: 100%" type="button" name="pay" value="online"
+                                style="width: 100%" type="button" name="pay" value="cod"
                                 data-payment-method="Thanh toán khi nhận hàng">
                                 Thanh toán khi nhận hàng
                             </button>
                             <button
                                 class="buy1 btn btn-primary {{ \Auth::id() ? '' : 'js-show-login' }} js-show-payment-confirm"
-                                style="width: 100%;margin-top: 20px" type="button" name="pay" value="transfer"
+                                style="width: 100%;margin-top: 20px" type="button" name="pay" value="online"
                                 data-payment-method="Thanh toán Online">
                                 Thanh toán Online
                             </button>

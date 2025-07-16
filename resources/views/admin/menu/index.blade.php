@@ -27,8 +27,8 @@
                                     <th style="width: 10px">ID</th>
                                     <th>Name</th>
                                     {{-- <th>Avatar</th> --}}
-                                    <th>Status</th>
-                                    <th>Hot</th>
+                                    {{-- <th>Status</th>
+                                    <th>Hot</th> --}}
                                     <th>Time</th>
                                     <th>Action</th>
                                 </tr>
@@ -42,7 +42,7 @@
                                                 <img src="{{ pare_url_file($menu->mn_avatar) }}"
                                                     style="width: 80px;height: 80px;">
                                             </td> --}}
-                                            <td>
+                                            {{-- <td>
                                                 @if ($menu->mn_status == 1)
                                                     <a href="{{ route('admin.menu.active', $menu->id) }}"
                                                         class="label label-info">Show</a>
@@ -59,7 +59,7 @@
                                                     <a href="{{ route('admin.menu.hot', $menu->id) }}"
                                                         class="label label-default">None</a>
                                                 @endif
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 @if ($menu->updated_at && $menu->updated_at != $menu->created_at)
                                                     {{ $menu->updated_at }}

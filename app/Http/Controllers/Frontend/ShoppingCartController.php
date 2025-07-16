@@ -115,11 +115,11 @@ class ShoppingCartController extends Controller
         $data['options']['orders'] = $shopping;
 
         $options['drive'] = $request->pay;
-        if ($request->pay == 'transfer') {
-            $data['tst_type'] = 2;
+        if ($request->pay == 'online') {
+            $data['tst_type'] = Transaction::TYPE_ONLINE;
             return $this->payOnline($request, $data, $shopping, $options);
         } else {
-            $data['tst_type'] = 1;
+            $data['tst_type'] = Transaction::TYPE_COD;
             try {
                 \Cart::destroy();
                 new PayManager($data, $shopping, $options);
@@ -157,7 +157,7 @@ class ShoppingCartController extends Controller
                     'message' => 'Thanh toán thành công'
                 ]);
 
-                return redirect()->to('/');
+                return redirect()->route('order.success', ['transactionId' => $transactionID]);
             }
 
             return redirect()->to('/')->with('danger', 'Mã đơn hàng không tồn tại');
@@ -166,6 +166,26 @@ class ShoppingCartController extends Controller
         if ($transaction)  $transaction->delete();
 
         return  redirect()->to('/');
+    }
+    public function orderSuccess(Request $request)
+    {
+        $transactionId = $request->query('transactionId'); // Lấy transactionId từ query parameter
+
+        // Tìm thông tin giao dịch và các đơn hàng liên quan
+        $transaction = Transaction::with('orders.product')->find($transactionId);
+
+        if (!$transaction) {
+            // Xử lý nếu không tìm thấy giao dịch (ví dụ: chuyển hướng về trang chủ với thông báo lỗi)
+            return redirect()->to('/')->with('danger', 'Không tìm thấy thông tin đơn hàng.');
+        }
+
+        $viewData = [
+            'title_page'  => 'Xác nhận đơn hàng',
+            'transaction' => $transaction
+        ];
+
+        // Trả về view hiển thị thông tin đơn hàng và nút quay về trang chủ
+        return view('frontend.pages.shopping.order_success', $viewData);
     }
 
     public function update(Request $request, $id)

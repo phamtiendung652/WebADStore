@@ -22,6 +22,11 @@ class Product extends Model
         return Arr::get($this->country, $this->pro_country, "[N\A]");
     }
 
+    public function specification()
+    {
+        return $this->hasOne(Specification::class, 'sp_product_id', 'id');
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class, 'pro_category_id');

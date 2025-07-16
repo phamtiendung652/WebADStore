@@ -23,15 +23,16 @@ class AdminCategoryController extends AdminController
 
     public function create()
     {
-        $categories = $this->getCategoriesSort();
-        return view('admin.category.create',compact('categories'));
+        // $categories = $this->getCategoriesSort();
+        return view('admin.category.create');
     }
 
     public function store(AdminRequestCategory $request)
     {
-        $data               = $request->except('_token','c_avatar');
+        $data               = $request->except('_token', 'c_avatar');
         $data['c_slug']     = Str::slug($request->c_name);
         $data['created_at'] = Carbon::now();
+
         if ($request->c_avatar) {
             $image = upload_image('c_avatar');
             if ($image['code'] == 1)
@@ -45,14 +46,14 @@ class AdminCategoryController extends AdminController
     public function edit($id)
     {
         $category = Category::find($id);
-        $categories = $this->getCategoriesSort();
-        return view('admin.category.update', compact('category','categories'));
+        // $categories = $this->getCategoriesSort();
+        return view('admin.category.update', compact('category'));
     }
 
     public function update(AdminRequestCategory $request, $id)
     {
         $category           = Category::find($id);
-        $data               = $request->except('_token','c_avatar');
+        $data               = $request->except('_token', 'c_avatar');
         $data['c_slug']     = Str::slug($request->c_name);
         $data['updated_at'] = Carbon::now();
 
@@ -92,13 +93,13 @@ class AdminCategoryController extends AdminController
         return redirect()->back();
     }
 
-    protected function getCategoriesSort()
-    {
-        $categories = Category::where('c_status', Category::STATUS_ACTIVE)
-            ->select('id', 'c_parent_id', 'c_name')->get();
+    // protected function getCategoriesSort()
+    // {
+    //     $categories = Category::where('c_status', Category::STATUS_ACTIVE)
+    //         ->select('id', 'c_parent_id', 'c_name')->get();
 
-        $listCategoriesSort = [];
-        Category::recursive($categories, $parent = 0, $level = 1, $listCategoriesSort);
-        return $listCategoriesSort;
-    }
+    //     $listCategoriesSort = [];
+    //     Category::recursive($categories, $parent = 0, $level = 1, $listCategoriesSort);
+    //     return $listCategoriesSort;
+    // }
 }

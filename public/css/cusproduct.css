@@ -1,0 +1,31 @@
+.product-actions {
+    margin-top: 10px;
+    /* text-align: center; */
+    /* Để căn giữa nút nếu muốn */
+}
+
+.btn-compare {
+    background-color: #007bff;
+    /* Màu nền xanh */
+    color: white;
+    /* Màu chữ trắng */
+    border: none;
+    /* padding: 8px 15px; */
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* .btn-compare i {
+    margin-right: 5px;
+} */
+
+.btn-compare:hover {
+    background-color: #0056b3;
+    /* Đổi màu khi di chuột qua */
+}
+
+.btn-added-compare {
+    background-color: #28a745 !important;
+    /* Màu xanh lá cây */
+}

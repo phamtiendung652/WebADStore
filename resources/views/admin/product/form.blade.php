@@ -7,7 +7,7 @@
             </div>
             <div class="box-body">
                 <div class="form-group ">
-                    <label for="exampleInputEmail1">Name</label>
+                    <label for="exampleInputEmail1">Tên sản phẩm</label>
                     <input type="text" class="form-control" name="pro_name" placeholder="Sản phẩm ...."
                         autocomplete="off" value="{{ $product->pro_name ?? old('pro_name') }}">
                     @if ($errors->first('pro_name'))
@@ -41,19 +41,80 @@
                                 placeholder="5">
                         </div>
                     </div>
-                    {{--                    <div class="col-sm-9"> --}}
-                    {{--                        <div class="form-group"> --}}
-                    {{--                            <label for="tag">Keyword</label> --}}
-                    {{--                            <select name="keywords[]" class="form-control js-select2-keyword" multiple=""> --}}
-                    {{--                                <option value="">__Click__</option> --}}
-                    {{--                                @foreach ($keywords as $keyword) --}}
-                    {{--                                    <option value="{{ $keyword->id }}" {{ in_array($keyword->id, $keywordOld ) ? "selected='selected'"  : '' }}> --}}
-                    {{--                                        {{ $keyword->k_name }}</option> --}}
-                    {{--                                @endforeach --}}
-                    {{--                            </select> --}}
-                    {{--                        </div> --}}
-                    {{--                    </div> --}}
+
                 </div>
+
+                {{-- NEW BLOCK FOR DETAILED SPECIFICATIONS --}}
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Thông số kỹ thuật chi tiết</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="sp_cpu">CPU</label>
+                                    <input type="text" class="form-control" name="sp_cpu"
+                                        placeholder="Ví dụ: Intel Core i7"
+                                        value="{{ $product->specification->sp_cpu ?? old('sp_cpu') }}">
+                                    @if ($errors->first('sp_cpu'))
+                                        <span class="text-danger">{{ $errors->first('sp_cpu') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="sp_gpu">GPU</label>
+                                    <input type="text" class="form-control" name="sp_gpu"
+                                        placeholder="Ví dụ: NVIDIA RTX 3060"
+                                        value="{{ $product->specification->sp_gpu ?? old('sp_gpu') }}">
+                                    @if ($errors->first('sp_gpu'))
+                                        <span class="text-danger">{{ $errors->first('sp_gpu') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="sp_ram">RAM</label>
+                                    <input type="text" class="form-control" name="sp_ram"
+                                        placeholder="Ví dụ: 16GB DDR4"
+                                        value="{{ $product->specification->sp_ram ?? old('sp_ram') }}">
+                                    @if ($errors->first('sp_ram'))
+                                        <span class="text-danger">{{ $errors->first('sp_ram') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="sp_storage">Bộ nhớ</label>
+                                    <input type="text" class="form-control" name="sp_storage"
+                                        placeholder="Ví dụ: 512GB SSD"
+                                        value="{{ $product->specification->sp_storage ?? old('sp_storage') }}">
+                                    @if ($errors->first('sp_storage'))
+                                        <span class="text-danger">{{ $errors->first('sp_storage') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="sp_display">Màn hình</label>
+                                    <input type="text" class="form-control" name="sp_display"
+                                        placeholder="Ví dụ: 15.6 inch Full HD IPS"
+                                        value="{{ $product->specification->sp_display ?? old('sp_display') }}">
+                                    @if ($errors->first('sp_display'))
+                                        <span class="text-danger">{{ $errors->first('sp_display') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{-- END NEW BLOCK FOR DETAILED SPECIFICATIONS --}}
+
                 <div class="form-group ">
                     <label for="exampleInputEmail1">Thông Số Kỹ Thuật</label>
                     <textarea name="pro_description" id="pro_description" class="form-control textarea" cols="5" rows="2"
@@ -68,7 +129,7 @@
                 <div class="form-group ">
                     <label class="control-label">Danh mục <b class="col-red">(*)</b></label>
                     <select name="pro_category_id" class="form-control ">
-                        <option value="">__Click__</option>
+                        <option value="">__Chọn__</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}"
                                 {{ ($product->pro_category_id ?? '') == $category->id ? "selected='selected'" : '' }}>
@@ -84,7 +145,7 @@
                 <div class="form-group ">
                     <label class="control-label">Nhà Cung cấp <b class="col-red">(*)</b></label>
                     <select name="pro_supplier_id" class="form-control ">
-                        <option value="">__Click__</option>
+                        <option value="">__Chọn__</option>
                         @foreach ($supplier as $item)
                             <option value="{{ $item->id }}"
                                 {{ ($product->pro_supplier_id ?? 0) == $item->id ? "selected='selected'" : '' }}>

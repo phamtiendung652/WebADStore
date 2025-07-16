@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Attribute;
 use App\Models\Keyword;
+use App\Models\Specification;
 
 class AdminProductController extends Controller
 {
@@ -19,8 +20,8 @@ class AdminProductController extends Controller
     {
         $products = Product::with('category:id,c_name');
         if ($id = $request->id) $products->where('id', $id);
-        if ($name = $request->name) $products->where('pro_name','like', '%'.$name.'%');
-        if ($category = $request->category) $products->where('pro_category_id',$category);
+        if ($name = $request->name) $products->where('pro_name', 'like', '%' . $name . '%');
+        if ($category = $request->category) $products->where('pro_category_id', $category);
 
         $products = $products->orderByDesc('id')->paginate(10);
         $categories = Category::all();
@@ -36,30 +37,32 @@ class AdminProductController extends Controller
     public function create()
     {
         $categories = Category::all();
-        $attributeOld = [];   
-        $keywordOld   = [];   
+        $attributeOld = [];
+        $keywordOld   = [];
 
         $attributes =  $this->syncAttributeGroup();
         $keywords   = Keyword::all();
 
         $supplier = Supplier::all();
 
-        return view('admin.product.create', compact('categories','attributeOld','attributes','keywords','keywordOld','supplier'));
+        return view('admin.product.create', compact('categories', 'attributeOld', 'attributes', 'keywords', 'keywordOld', 'supplier'));
     }
 
     public function store(AdminRequestProduct $request)
     {
-        $data = $request->except('_token','pro_avatar','attribute','keywords','file','pro_sale','pro_file');
+        $data = $request->except('_token', 'pro_avatar', 'attribute', 'keywords', 'file', 'pro_sale', 'pro_file', 'sp_cpu', 'sp_gpu', 'sp_ram', 'sp_storage', 'sp_display');
         $data['pro_slug']     = Str::slug($request->pro_name);
         $data['created_at']   = Carbon::now();
-        if ($request->pro_sale)
-		{
-			$data['pro_sale'] = $request->pro_sale;
-		}
-        
+        // $data['pro_active'] = $request->has('pro_active') ? 1 : 0;
+        // $data['pro_hot'] = $request->has('pro_hot') ? 1 : 0;
+        // $data['pro_pay'] = $request->has('pro_pay') ? 1 : 0;
+        if ($request->pro_sale) {
+            $data['pro_sale'] = $request->pro_sale;
+        }
+
         if ($request->pro_avatar) {
             $image = upload_image('pro_avatar');
-            if ($image['code'] == 1) 
+            if ($image['code'] == 1)
                 $data['pro_avatar'] = $image['name'];
         }
 
@@ -75,19 +78,21 @@ class AdminProductController extends Controller
             $this->syncKeyword($request->keywords, $id);
             if ($request->file) {
                 $this->syncAlbumImageAndProduct($request->file, $id);
-            }   
+            }
+            $this->syncSpecification($request, $id);
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Sản phẩm đã được thêm thành công!');
     }
 
-    public function edit($id) 
+    public function edit($id)
     {
         $categories = Category::all();
+        $product = Product::with('specification')->findOrFail($id);
         $product = Product::findOrFail($id);
-        $attributes =  $this->syncAttributeGroup(); 
+        $attributes =  $this->syncAttributeGroup();
         $keywords   = Keyword::all();
-		$supplier = Supplier::all();
+        $supplier = Supplier::all();
 
         $attributeOld = \DB::table('products_attributes')
             ->where('pa_product_id', $id)
@@ -112,7 +117,7 @@ class AdminProductController extends Controller
             'attributes'    => $attributes,
             'attributeOld'  => $attributeOld,
             'keywords'      => $keywords,
-			'supplier'		=> $supplier,
+            'supplier'        => $supplier,
             'keywordOld'    => $keywordOld,
             'images'        => $images ?? []
         ];
@@ -123,17 +128,19 @@ class AdminProductController extends Controller
     public function update(AdminRequestProduct $request, $id)
     {
         $product           = Product::find($id);
-        $data               = $request->except('_token','pro_avatar','attribute','keywords','file','pro_sale','pro_file');
+        $data                      = $request->except('_token', 'pro_avatar', 'attribute', 'keywords', 'file', 'pro_sale', 'pro_file', 'sp_cpu', 'sp_gpu', 'sp_ram', 'sp_storage', 'sp_display');
         $data['pro_slug']     = Str::slug($request->pro_name);
         $data['updated_at'] = Carbon::now();
-		if ($request->pro_sale)
-		{
-			$data['pro_sale'] = $request->pro_sale;
-		}
+        // $data['pro_active'] = $request->has('pro_active') ? 1 : 0;
+        // $data['pro_hot'] = $request->has('pro_hot') ? 1 : 0;
+        // $data['pro_pay'] = $request->has('pro_pay') ? 1 : 0;
+        if ($request->pro_sale) {
+            $data['pro_sale'] = $request->pro_sale;
+        }
 
         if ($request->pro_avatar) {
             $image = upload_image('pro_avatar');
-            if ($image['code'] == 1) 
+            if ($image['code'] == 1)
                 $data['pro_avatar'] = $image['name'];
         }
 
@@ -146,15 +153,16 @@ class AdminProductController extends Controller
         $update = $product->update($data);
 
         if ($update) {
-            $this->syncAttribute($request->attribute, $id); 
+            $this->syncAttribute($request->attribute, $id);
             $this->syncKeyword($request->keywords, $id);
 
             if ($request->file) {
                 $this->syncAlbumImageAndProduct($request->file, $id);
-            }   
+            }
+            $this->syncSpecification($request, $id);
         }
-        
-        return redirect()->back();
+
+        return redirect()->back()->with('success', 'Sản phẩm đã được cập nhật thành công!');
     }
 
     public function syncAlbumImageAndProduct($files, $productID)
@@ -162,25 +170,29 @@ class AdminProductController extends Controller
         foreach ($files as $key => $fileImage) {
             $ext = $fileImage->getClientOriginalExtension();
             $extend = [
-                'png','jpg','jpeg','PNG','JPG'
+                'png',
+                'jpg',
+                'jpeg',
+                'PNG',
+                'JPG'
             ];
 
             if (!in_array($ext, $extend)) return false;
 
-            $filename = date('Y-m-d__').Str::slug($fileImage->getClientOriginalName()).'.'.$ext;
-            $path = public_path().'/uploads/'.date('Y/m/d/');
-            if (!\File::exists($path)){
+            $filename = date('Y-m-d__') . Str::slug($fileImage->getClientOriginalName()) . '.' . $ext;
+            $path = public_path() . '/uploads/' . date('Y/m/d/');
+            if (!\File::exists($path)) {
                 mkdir($path, 0777, true);
             }
 
             $fileImage->move($path, $filename);
             \DB::table('product_images')
-            ->insert([
-                'pi_name' => $fileImage->getClientOriginalName(),
-                'pi_slug' => $filename,
-                'pi_product_id' => $productID,
-                'created_at' => Carbon::now()
-            ]);
+                ->insert([
+                    'pi_name' => $fileImage->getClientOriginalName(),
+                    'pi_slug' => $filename,
+                    'pi_product_id' => $productID,
+                    'created_at' => Carbon::now()
+                ]);
         }
     }
 
@@ -221,9 +233,13 @@ class AdminProductController extends Controller
     public function delete($id)
     {
         $product = Product::find($id);
-        if ($product) $product->delete();
+        if ($product) {
+            Specification::where('sp_product_id', $id)->delete();
+            \DB::table('products_attributes')->where('pa_product_id', $id)->delete();
+            $product->delete();
+        }
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Sản phẩm đã được xóa thành công!');
     }
 
     public function deleteImage($imageID)
@@ -232,7 +248,7 @@ class AdminProductController extends Controller
         return redirect()->back();
     }
 
-    protected function syncAttribute($attributes , $idProduct)
+    protected function syncAttribute($attributes, $idProduct)
     {
         if (!empty($attributes)) {
             $datas = [];
@@ -246,7 +262,33 @@ class AdminProductController extends Controller
                 \DB::table('products_attributes')->where('pa_product_id', $idProduct)->delete();
                 \DB::table('products_attributes')->insert($datas);
             }
-        }   
+        }
+    }
+    protected function syncSpecification(Request $request, $productId)
+    {
+        // Get only the specification-related fields from the request
+        $specificationData = $request->only('sp_cpu', 'sp_gpu', 'sp_ram', 'sp_storage', 'sp_display');
+
+        // Check if any specification data is provided (i.e., at least one field is not empty)
+        $hasSpecificationData = false;
+        foreach ($specificationData as $value) {
+            if (!empty($value)) {
+                $hasSpecificationData = true;
+                break;
+            }
+        }
+
+        if ($hasSpecificationData) {
+            // Find existing specification for the product
+            // updateOrCreate will handle both creation and update efficiently
+            Specification::updateOrCreate(
+                ['sp_product_id' => $productId], // Conditions to find the record
+                $specificationData             // Data to update or create with
+            );
+        } else {
+            // If no specification data is provided, delete any existing specification for this product
+            Specification::where('sp_product_id', $productId)->delete();
+        }
     }
 
 
@@ -254,7 +296,7 @@ class AdminProductController extends Controller
     {
         $attributes     = Attribute::get();
         $groupAttribute = [];
-        
+
         foreach ($attributes as $key => $attribute) {
             $key = $attribute->gettype($attribute->atb_type)['name'];
             $groupAttribute[$key][] = $attribute->toArray();
@@ -262,5 +304,4 @@ class AdminProductController extends Controller
 
         return $groupAttribute;
     }
-
 }

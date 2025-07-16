@@ -18,7 +18,7 @@ class AdminLoginController extends Controller
     public function postLoginAdmin(Request $request)
     {
         if (\Auth::guard('admins')->attempt(['email' => $request->email, 'password' => $request->password])) {
-//            return redirect()->intended('/api-admin');
+            //            return redirect()->intended('/api-admin');
             return redirect()->route('admin.statistical');
         }
 

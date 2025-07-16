@@ -2,7 +2,7 @@
     <div class="item">
         <p class="item_author">
             <span>{{ $review->user->name ?? "Admin" }}</span>
-            <span class="item_success"><i class="la la-check-circle"></i> Đã mua hàng tại TrungPhuNA</span>
+            <span class="item_success"><i class="la la-check-circle"></i> A&D Store </span>
         </p>
         <div class="item_review">
             <span class="item_review">

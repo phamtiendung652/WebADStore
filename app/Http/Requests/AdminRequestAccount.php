@@ -30,7 +30,7 @@ class AdminRequestAccount extends FormRequest
                 'required',
                 'unique:admins,phone,',
                 'regex:/^0[^0]\d{8}$/', // Quy tắc số điện thoại Việt Nam
-            ] . $this->id,
+            ],
         ];
 
         if (!$this->id) {

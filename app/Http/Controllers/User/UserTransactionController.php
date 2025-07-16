@@ -7,18 +7,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session; // Import Session facade
 
 class UserTransactionController extends Controller
 {
     public function index(Request $request)
     {
         $transactions = Transaction::whereRaw(1)
-            ->where('tst_user_id', \Auth::id());
+            ->where('tst_user_id', Auth::id());
 
         if ($request->id) {
-        	$id = str_replace(['DH','dh'],'', $request->id);
-			$transactions->where('id', $id);
-		}
+            $id = str_replace(['DH','dh'],'', $request->id);
+            $transactions->where('id', $id);
+        }
         if ($email = $request->email) {
             $transactions->where('tst_email', 'like', '%' . $email . '%');
         }
@@ -38,9 +40,16 @@ class UserTransactionController extends Controller
         $transactions = $transactions->orderByDesc('id')
             ->paginate(10);
 
-        // if ($request->export) {
-        //     return \Excel::download(new TransactionExport($transactions), 'don-hang.xlsx');
-        // }
+        // Add can_cancel attribute to each transaction for view logic
+        foreach ($transactions as $transaction) {
+            // Rule: tst_type = 2 (online payment) cannot be cancelled
+            // Rule: tst_type = 1 (COD) can only be cancelled if tst_status = 1 (Tiếp nhận)
+            $canCancel = false;
+            if ($transaction->tst_type == 1 && $transaction->tst_status == 1) {
+                $canCancel = true;
+            }
+            $transaction->can_cancel = $canCancel;
+        }
 
         $viewData = [
             'transactions' => $transactions,
@@ -54,7 +63,7 @@ class UserTransactionController extends Controller
     {
         $transaction = Transaction::with('user:id,name')->where([
             'id'          => $id,
-            'tst_user_id' => \Auth::id()
+            'tst_user_id' => Auth::id()
         ])->first();
         if (!$transaction) return redirect()->to('/');
 
@@ -70,7 +79,7 @@ class UserTransactionController extends Controller
     {
         $transaction = Transaction::with('user:id,name')->where([
             'id'          => $id,
-            'tst_user_id' => \Auth::id()
+            'tst_user_id' => Auth::id()
         ])->first();
         if (!$transaction || $transaction->tst_status == -1)
             return redirect()->to('/');
@@ -86,10 +95,31 @@ class UserTransactionController extends Controller
     public function cancelTransaction($id)
     {
         $transaction = Transaction::find($id);
-        if ($transaction)
-        {
-            $transaction->tst_status = -1;
-            $transaction->save();
+
+        if (!$transaction || $transaction->tst_user_id != Auth::id()) {
+            Session::flash('error', 'Không tìm thấy đơn hàng hoặc bạn không có quyền hủy đơn hàng này.');
+            return redirect()->back();
+        }
+
+        // Rule: If type = 2 (online payment), cannot cancel
+        if ($transaction->tst_type == 2) {
+            Session::flash('error', 'Đơn hàng thanh toán online không thể hủy.');
+            return redirect()->back();
+        }
+
+        // Rule: If type = 1 (COD), can only cancel if status = 1
+        if ($transaction->tst_type == 1) {
+            if ($transaction->tst_status == 1) {
+                $transaction->tst_status = -1; // Set status to cancelled
+                $transaction->save();
+                Session::flash('success', 'Đơn hàng đã được hủy thành công.');
+            } else {
+                Session::flash('error', 'Đơn hàng đã được xử lý hoặc không thể hủy ở trạng thái hiện tại.');
+            }
+        } else {
+            // This case handles any other tst_type not explicitly defined,
+            // or if tst_type is missing/unexpected.
+            Session::flash('error', 'Loại giao dịch không hợp lệ hoặc không thể hủy.');
         }
 
         return redirect()->back();
@@ -102,20 +132,20 @@ class UserTransactionController extends Controller
             ->get();
     }
 
-	/**
-	 * @param $id
-	 * export hoa don cho user
-	 */
+    /**
+     * @param $id
+     * export hoa don cho user
+     */
     public function exportInvoiceTransaction($id)
-	{
-		$transaction = Transaction::with('admin:id,name')->where('id', $id)->first();
-		$orders = Order::with('product:id,pro_name,pro_slug,pro_avatar')
-			->where('od_transaction_id', $id)
-			->get();
+    {
+        $transaction = Transaction::with('admin:id,name')->where('id', $id)->first();
+        $orders = Order::with('product:id,pro_name,pro_slug,pro_avatar')
+            ->where('od_transaction_id', $id)
+            ->get();
 
-		$html =  view('user.include._inc_invoice_transaction',compact('transaction','orders'))->render();
-		return response()->json(['html' => $html]);
+        $html = view('user.include._inc_invoice_transaction',compact('transaction','orders'))->render();
+        return response()->json(['html' => $html]);
 
-//		return \Excel::download(new TransactionInvoiceExport($transaction), 'don-hang.xlsx');
-	}
+//      return \Excel::download(new TransactionInvoiceExport($transaction), 'don-hang.xlsx');
+    }
 }

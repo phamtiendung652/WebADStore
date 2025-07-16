@@ -33,7 +33,7 @@
                                 <td style="text-align: center;">
                                     <a href="{{ route('get.user.comment.delete', $comment->id) }}"
                                         class="btn btn-xs label-danger js-delete-confirm"><i class="fa fa-trash"></i>
-                                        Delete</a>
+                                        Xóa</a>
                                 </td>
                             </tr>
                         @endforeach

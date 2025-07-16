@@ -1,8 +1,8 @@
 @extends('layouts.app_master_frontend')
 @section('css')
     <style>
-		<?php $style = file_get_contents('css/product_insights.min.css');echo $style;?>
-        .filter-tab .active a {
+        <?php $style = file_get_contents('css/product_insights.min.css');
+        echo $style; ?> .filter-tab .active a {
             color: red;
         }
     </style>
@@ -16,17 +16,17 @@
             <div class="right">
                 <div class="breadcrumb">
                     <ul>
-                        <li >
+                        <li>
                             <a itemprop="url" href="/" title="Home"><span itemprop="title">Trang chủ</span></a>
                         </li>
                     </ul>
                 </div>
                 <div class="filter-tab">
                     <ul>
-                        @for($i = 1; $i <= 6; $i++)
-                            <li class="{{ Request::get('price') == $i ? "active" : "" }}">
-                                <a href="{{ request()->fullUrlWithQuery(['price' =>  $i]) }}">
-                                    {{  $i == 6 ? "Lớn hơn 30 Triệu " : "Giá " . number_format($i * 5000000,0,',','.')  ." vnđ" }}
+                        @for ($i = 1; $i <= 6; $i++)
+                            <li class="{{ Request::get('price') == $i ? 'active' : '' }}">
+                                <a href="{{ request()->fullUrlWithQuery(['price' => $i]) }}">
+                                    {{ $i == 6 ? 'Lớn hơn 30 Triệu ' : 'Giá ' . number_format($i * 5000000, 0, ',', '.') . ' vnđ' }}
                                 </a>
                             </li>
                         @endfor
@@ -39,14 +39,16 @@
                         <div class="item">
                             <span class="title js-show-sort">Sắp xếp <i class="fa fa-caret-down"></i></span>
                             <ul>
-                                <li><a class="{{ Request::get('sort') == 'desc' ? "active" : "" }}" href="{{ request()->fullUrlWithQuery(['sort'=> 'desc']) }}">Mới nhất</a></li>
-                                <li><a class="{{ Request::get('sort') == 'asc' ? "active" : "" }}" href="{{ request()->fullUrlWithQuery(['sort'=> 'asc']) }}">Cũ nhất</a></li>
+                                <li><a class="{{ Request::get('sort') == 'desc' ? 'active' : '' }}"
+                                        href="{{ request()->fullUrlWithQuery(['sort' => 'desc']) }}">Mới nhất</a></li>
+                                <li><a class="{{ Request::get('sort') == 'asc' ? 'active' : '' }}"
+                                        href="{{ request()->fullUrlWithQuery(['sort' => 'asc']) }}">Cũ nhất</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="group">
-                    @foreach($products as $product)
+                    @foreach ($products as $product)
                         @include('frontend.components.product_item', ['product' => $product])
                     @endforeach
                 </div>
@@ -59,9 +61,10 @@
 @stop
 @section('script')
     <script>
-		var CSS = "{{ asset('css/product_search.min.css') }}";
+        var CSS = "{{ asset('css/product_search.min.css') }}";
     </script>
-    <script type="text/javascript">
-		<?php $js = file_get_contents('js/product_search.js');echo $js;?>
-    </script>
+        <script type="text/javascript">
+            <?php $js = file_get_contents('js/product_search.js');
+            echo $js; ?>
+        </script>
 @stop

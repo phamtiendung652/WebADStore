@@ -81,6 +81,8 @@ Route::group(['namespace' => 'Frontend'], function() {
 
     Route::get('ajax/load-document','PageStaticController@getDocumentAjax')->name('get_ajax.static.document');
     Route::get('demo/view-file','PageStaticController@getDemoViewFile');
+
+    Route::get('so-sanh-san-pham', 'CompareController@index')->name('get.product.compare');
 });
 
 Route::group(['prefix' => 'test','namespace' => 'Test'], function(){

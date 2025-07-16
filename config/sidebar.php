@@ -48,13 +48,13 @@ return [
                 'icon'  => 'fa fa-star',
                 'level'  => [1, 2],
             ],
-            [
-                'name'  => 'Mã giảm giá',
-                'namespace' => 'discount-code',
-                'route' => 'admin.discount.code.index',
-                'icon'  => 'fa fa-fw fa-arrow-circle-down',
-                'level'  => [1, 2],
-            ],
+            // [
+            //     'name'  => 'Mã giảm giá',
+            //     'namespace' => 'discount-code',
+            //     'route' => 'admin.discount.code.index',
+            //     'icon'  => 'fa fa-fw fa-arrow-circle-down',
+            //     'level'  => [1, 2],
+            // ],
         ]
     ],
     [
@@ -167,13 +167,13 @@ return [
         'icon' => 'fa-shopping-cart',
         'level'  => [1, 2],
         'sub'  => [
-            [
-                'name'  => 'Nhập kho',
-                'namespace' => 'import',
-                'route' => 'admin.inventory.warehousing',
-                'icon'  => 'fa-opencart',
-                'level'  => [1, 2],
-            ],
+            // [
+            //     'name'  => 'Nhập kho',
+            //     'namespace' => 'import',
+            //     'route' => 'admin.inventory.warehousing',
+            //     'icon'  => 'fa-opencart',
+            //     'level'  => [1, 2],
+            // ],
             [
                 'name'  => 'Xuất kho',
                 'namespace' => 'export',

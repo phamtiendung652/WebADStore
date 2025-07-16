@@ -15,52 +15,52 @@ class AdminInventoryController extends Controller
 	/**
 	 * Nhập kho
 	 */
-    public function getWarehousing()
-	{
-        $warehouses =  Warehouse::orderByDesc('id')
-        ->paginate(10);
+    // public function getWarehousing()
+	// {
+    //     $warehouses =  Warehouse::orderByDesc('id')
+    //     ->paginate(10);
 
 
-		$viewData = [
-			'warehouses' => $warehouses,
-		];
+	// 	$viewData = [
+	// 		'warehouses' => $warehouses,
+	// 	];
 
-		return view('admin.inventory.import', $viewData);
-	}
+	// 	return view('admin.inventory.import', $viewData);
+	// }
 
-	public function add()
-    {
-        $products = Product::all();
-        return view('admin.inventory.import_add', compact('products'));
-    }
+	// public function add()
+    // {
+    //     $products = Product::all();
+    //     return view('admin.inventory.import_add', compact('products'));
+    // }
 
-    public function store(Request $request)
-    {
-        $data = $request->except('_token');
-        Warehouse::create($data);
-        return redirect()->route('admin.inventory.warehousing');
-    }
+    // public function store(Request $request)
+    // {
+    //     $data = $request->except('_token');
+    //     Warehouse::create($data);
+    //     return redirect()->route('admin.inventory.warehousing');
+    // }
 
-    public function edit($id)
-    {
-        $warehouse = Warehouse::find($id);
-        $products = Product::all();
-        return view('admin.inventory.import_update', compact('products','warehouse'));
-    }
+    // public function edit($id)
+    // {
+    //     $warehouse = Warehouse::find($id);
+    //     $products = Product::all();
+    //     return view('admin.inventory.import_update', compact('products','warehouse'));
+    // }
 
-    public function update(Request $request,$id)
-    {
-        $data = $request->except('_token');
-        $warehouse = Warehouse::find($id);
-        $warehouse->fill($data)->save();
-        return redirect()->route('admin.inventory.warehousing');
-    }
+    // public function update(Request $request,$id)
+    // {
+    //     $data = $request->except('_token');
+    //     $warehouse = Warehouse::find($id);
+    //     $warehouse->fill($data)->save();
+    //     return redirect()->route('admin.inventory.warehousing');
+    // }
 
-    public function delete(Request $request,$id)
-    {
-        Warehouse::find($id)->delete();
-        return redirect()->route('admin.inventory.warehousing');
-    }
+    // public function delete(Request $request,$id)
+    // {
+    //     Warehouse::find($id)->delete();
+    //     return redirect()->route('admin.inventory.warehousing');
+    // }
 
 	/**
 	 * Xuất kho

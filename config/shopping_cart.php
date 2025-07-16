@@ -11,10 +11,10 @@ return [
         '3'  => 'Thành công',
     ],
     'drive_pay' => [
-        'transfer' => [
+        'online' => [
             'process' => PayTransferService::class
         ],
-        'online'   => [
+        'cod'   => [
             'process' => PayOnlinePaymentService::class
         ]
     ]
