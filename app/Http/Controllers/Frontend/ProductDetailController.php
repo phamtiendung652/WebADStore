@@ -20,7 +20,7 @@ class ProductDetailController extends FrontendController
 
 		if ($id) {
 			//1. Lấy thông tin sp
-			$product = Product::with('category:id,c_name,c_slug', 'keywords')->findOrFail($id);
+			$product = Product::with('category:id,c_name,c_slug', 'keywords', 'variants')->findOrFail($id);
 
 			//2. Xử lý view
 			ProcessViewService::view('products', 'pro_view', 'product', $id);
@@ -80,7 +80,7 @@ class ProductDetailController extends FrontendController
 
 			$viewData = [
 				'isPopupCaptcha'   => 0,
-//				'isPopupCaptcha'   => \Auth::user()->count_comment ?? 0,
+				//				'isPopupCaptcha'   => \Auth::user()->count_comment ?? 0,
 				'ratingDefault'    => $ratingDefault,
 				'product'          => $product,
 				'ratings'          => $ratings,

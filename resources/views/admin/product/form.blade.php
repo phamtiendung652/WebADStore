@@ -47,7 +47,7 @@
                 {{-- NEW BLOCK FOR DETAILED SPECIFICATIONS --}}
                 <div class="box box-warning">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Thông số kỹ thuật chi tiết</h3>
+                        <h3 class="box-title">Thông số kỹ thuật</h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -115,8 +115,189 @@
                 </div>
                 {{-- END NEW BLOCK FOR DETAILED SPECIFICATIONS --}}
 
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Quản lý biến thể sản phẩm</h3>
+                        {{-- Nút này có thể thêm các trường biến thể động bằng JS --}}
+                        <button type="button" id="add_variant_btn" class="btn btn-info btn-sm pull-right">
+                            <i class="fa fa-plus"></i> Thêm biến thể
+                        </button>
+                    </div>
+                    <div class="box-body" id="product_variants_container">
+                        {{-- Các biến thể hiện có sẽ được render ở đây --}}
+                        @if (isset($product) && $product->variants->isNotEmpty())
+                            @foreach ($product->variants as $index => $variant)
+                                <div class="variant-item"
+                                    style="border: 1px solid #eee; padding: 15px; margin-bottom: 10px; border-radius: 5px;">
+                                    <h4>Biến thể #{{ $index + 1 }}
+                                        <button type="button"
+                                            class="btn btn-danger btn-xs pull-right remove-variant-btn"
+                                            data-variant-id="{{ $variant->id }}">Xóa</button>
+                                    </h4>
+                                    <input type="hidden" name="variants[{{ $index }}][id]"
+                                        value="{{ $variant->id }}">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Tên biến thể</label>
+                                                <input type="text"
+                                                    name="variants[{{ $index }}][variant_name]"
+                                                    class="form-control"
+                                                    value="{{ old('variants.' . $index . '.variant_name', $variant->variant_name) }}"
+                                                    placeholder="Ví dụ: Màu đen">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Màu sắc</label>
+                                                <input type="text" name="variants[{{ $index }}][color]"
+                                                    class="form-control"
+                                                    value="{{ old('variants.' . $index . '.color', $variant->color) }}"
+                                                    placeholder="Ví dụ: Đen">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Mã SKU</label>
+                                                <input type="text" name="variants[{{ $index }}][sku]"
+                                                    class="form-control"
+                                                    value="{{ old('variants.' . $index . '.sku', $variant->sku) }}"
+                                                    placeholder="Ví dụ: SP001-DEN">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Điều chỉnh giá</label>
+                                                <input type="number"
+                                                    name="variants[{{ $index }}][price_adjustment]"
+                                                    class="form-control"
+                                                    value="{{ old('variants.' . $index . '.price_adjustment', $variant->price_adjustment) }}"
+                                                    step="0.01">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Giá hiện tại</label>
+                                                <input type="number"
+                                                    name="variants[{{ $index }}][current_price]"
+                                                    class="form-control"
+                                                    value="{{ old('variants.' . $index . '.current_price', $variant->current_price) }}"
+                                                    step="0.01">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Số lượng trong kho</label>
+                                                <input type="number"
+                                                    name="variants[{{ $index }}][quantity_in_stock]"
+                                                    class="form-control"
+                                                    value="{{ old('variants.' . $index . '.quantity_in_stock', $variant->quantity_in_stock) }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Ảnh biến thể</label>
+                                        <input type="file" name="variants[{{ $index }}][variant_image]"
+                                            class="form-control">
+                                        @if ($variant->variant_image)
+                                            <img src="{{ pare_url_file($variant->variant_image) }}"
+                                                alt="Variant Image" class="img-thumbnail"
+                                                style="width: 100px; height: 100px; object-fit: cover; margin-top: 5px;">
+                                        @endif
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox"
+                                                    name="variants[{{ $index }}][is_active]" value="1"
+                                                    {{ $variant->is_active ? 'checked' : '' }}> Kích hoạt
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                        {{-- Template cho biến thể mới (sẽ được clone bằng JS) --}}
+                        <template id="variant_template">
+                            <div class="variant-item"
+                                style="border: 1px solid #eee; padding: 15px; margin-bottom: 10px; border-radius: 5px;">
+                                <h4>Biến thể mới
+                                    <button type="button"
+                                        class="btn btn-danger btn-xs pull-right remove-variant-btn">Xóa</button>
+                                </h4>
+                                <input type="hidden" name="variants[__INDEX__][id]" value="">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Tên biến thể</label>
+                                            <input type="text" name="variants[__INDEX__][variant_name]"
+                                                class="form-control" placeholder="Ví dụ: Màu đen">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Màu sắc</label>
+                                            <input type="text" name="variants[__INDEX__][color]"
+                                                class="form-control" placeholder="Ví dụ: Đen">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Mã SKU</label>
+                                            <input type="text" name="variants[__INDEX__][sku]"
+                                                class="form-control" placeholder="Ví dụ: SP001-DEN">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Điều chỉnh giá</label>
+                                            <input type="number" name="variants[__INDEX__][price_adjustment]"
+                                                class="form-control" value="0.00" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Giá hiện tại</label>
+                                            <input type="number" name="variants[__INDEX__][current_price]"
+                                                class="form-control" value="0.00" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Số lượng trong kho</label>
+                                            <input type="number" name="variants[__INDEX__][quantity_in_stock]"
+                                                class="form-control" value="0">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ảnh biến thể</label>
+                                    <input type="file" name="variants[__INDEX__][variant_image]"
+                                        class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="variants[__INDEX__][is_active]"
+                                                value="1" checked> Kích hoạt
+                                        </label>
+                                    </div>
+                                </div> <!-- Đã sửa: Đảm bảo thẻ đóng </div> đúng cho form-group -->
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
                 <div class="form-group ">
-                    <label for="exampleInputEmail1">Thông Số Kỹ Thuật</label>
+                    <label for="exampleInputEmail1">Chi Tiết Thông Số</label>
                     <textarea name="pro_description" id="pro_description" class="form-control textarea" cols="5" rows="2"
                         autocomplete="off">{{ $product->pro_description ?? old('pro_description') }}</textarea>
                     @if ($errors->first('pro_description'))
@@ -180,26 +361,6 @@
                 @endforeach
             </div>
             <hr>
-            {{-- <div class="box-header with-border">
-                <h3 class="box-title">Thuộc tính</h3>
-            </div>
-            <div class="box-body">
-                @foreach ($attributes as $key => $attribute)
-                    <div class="form-group col-sm-3">
-                        <h4 style="border-bottom: 1px solid #dedede;padding-bottom: 10px;">{{ $key }}</h4>
-                        @foreach ($attribute as $item)
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="attribute[]"
-                                        {{ in_array($item['id'], $attributeOld) ? 'checked' : '' }}
-                                        value="{{ $item['id'] }}"> {{ $item['atb_name'] }}
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
-                @endforeach
-            </div>
-            <hr> --}}
         </div>
         <div class="box box-warning">
             <div class="box-header with-border">
@@ -240,18 +401,6 @@
                 <h3 class="box-title">Thao Tác</h3>
             </div>
             <div class="box-body ">
-                {{-- <div class="form-group ">
-                    <textarea name="pro_link" class="form-control textarea" cols="5" rows="2" >{{ $product->pro_link ?? '' }}</textarea>
-                    @if ($errors->first('pro_link'))
-                        <span class="text-danger">{{ $errors->first('pro_link') }}</span>
-                    @endif
-                </div>
-                <div class="form-group ">
-                    <input type="file" name="pro_file" class="form-control">
-                    @if (isset($product->pro_file))
-                        <a href="">{{ $product->pro_file }}</a>
-                    @endif
-                </div> --}}
                 <div class="box-footer text-center">
                     <a href="{{ route('admin.product.index') }}" class="btn btn-default"><i
                             class="fa fa-arrow-left"></i> Cancel</a>
@@ -263,26 +412,118 @@
     </div>
 </form>
 
-<script>
-    ckeditor('pro_content');
-    ckeditor('pro_description')
-</script>
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/css/fileinput.css" media="all"
-    rel="stylesheet" type="text/css" />
+{{-- Tải các thư viện JS/CSS cần thiết trước script chính của bạn --}}
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!-- Thêm Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/js/fileinput.js" type="text/javascript">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/themes/fa/theme.js"
     type="text/javascript"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/css/fileinput.css" media="all"
+    rel="stylesheet" type="text/css" />
 
-{{-- <div class="box-header with-border">
-        <h3 class="box-title">Album ảnh</h3>
-    </div>
-    <div class="box-body">
-         <div class="form-group">
-            <div class="file-loading">
-                <input id="images" type="file" name="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="0">
-            </div>
-        </div>
-    </div> --}}
+<script>
+    // Đặt tất cả các script liên quan đến DOM và jQuery vào trong $(document).ready()
+    $(document).ready(function() {
+        // Khởi tạo CKEditor
+        // Đảm bảo hàm ckeditor() được định nghĩa và có sẵn
+        if (typeof ckeditor === 'function') {
+            ckeditor('pro_content');
+            ckeditor('pro_description');
+        } else {
+            console.warn(
+                "CKEditor function 'ckeditor()' not found. Please ensure CKEditor is loaded correctly.");
+        }
+
+
+        // Script để hiển thị tên file khi chọn ảnh đại diện
+        $(document).on('change', '.js-upload', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $('#upload-file-info').html(fileName);
+        });
+
+        // Khởi tạo fileinput cho album ảnh
+        if ($.fn.fileinput) {
+            $("#images").fileinput({
+                uploadUrl: "#", // Không cần upload URL nếu bạn xử lý bằng Laravel Controller
+                enableResumableUpload: true,
+                maxFileCount: 10, // Giới hạn số lượng ảnh tải lên
+                showUpload: false, // Ẩn nút upload
+                showRemove: false, // Ẩn nút remove
+                initialPreviewAsData: true,
+                overwriteInitial: false,
+            });
+        } else {
+            console.error(
+                "Lỗi: jQuery FileInput plugin không được tải hoặc không khả dụng. Hãy kiểm tra lại các file JS của Bootstrap và FileInput."
+            );
+        }
+
+        // Logic cho việc thêm/xóa biến thể sản phẩm
+        // Đảm bảo biến $product được truyền vào view và có thuộc tính variants
+        let variantIndex = @json(isset($product) && $product->variants->isNotEmpty() ? $product->variants->count() : 0);
+
+        $('#add_variant_btn').on('click', function() {
+            const template = document.getElementById('variant_template');
+            const container = document.getElementById('product_variants_container');
+
+            if (!template || !container) {
+                console.error("Template or container for variants not found.");
+                return;
+            }
+
+            // Get the content from the template
+            const clone = template.content.cloneNode(true);
+            const newVariantItem = clone.querySelector(
+                '.variant-item'); // Get the main div of the variant
+
+            // Update names and IDs within the cloned content
+            $(newVariantItem).find('[name*="__INDEX__"]').each(function() {
+                const currentName = $(this).attr('name');
+                if (currentName) {
+                    $(this).attr('name', currentName.replace(/__INDEX__/, variantIndex));
+                }
+                const currentId = $(this).attr('id');
+                if (currentId) {
+                    $(this).attr('id', currentId.replace(/__INDEX__/, variantIndex));
+                }
+            });
+
+            // Update the title for the new variant
+            $(newVariantItem).find('h4').text('Biến thể mới #' + (variantIndex + 1));
+
+            container.appendChild(newVariantItem); // Append the modified clone
+
+            variantIndex++;
+        });
+
+        // Handle remove variant button (sử dụng event delegation với jQuery)
+        $('#product_variants_container').on('click', '.remove-variant-btn', function(event) {
+            if (confirm('Bạn có chắc chắn muốn xóa biến thể này không?')) {
+                const variantItem = $(this).closest('.variant-item');
+                const variantId = $(this).data('variantId');
+
+                if (variantId) {
+                    const form = $(this).closest('form');
+                    let deletedVariantsInput = form.find('input[name="deleted_variants"]');
+                    if (deletedVariantsInput.length === 0) {
+                        deletedVariantsInput = $(
+                            '<input type="hidden" name="deleted_variants" value="[]">');
+                        form.append(deletedVariantsInput);
+                    }
+                    let currentDeleted = JSON.parse(deletedVariantsInput.val());
+                    currentDeleted.push(variantId);
+                    deletedVariantsInput.val(JSON.stringify(currentDeleted));
+                }
+                variantItem.remove();
+            }
+        });
+
+        // Function to handle file input name changes (for dynamic variants)
+        $(document).on('change', 'input[type="file"][name^="variants"]', function() {
+            var fileName = $(this).val().split('\\').pop();
+            console.log('Selected file for variant:', fileName);
+        });
+    });
+</script>

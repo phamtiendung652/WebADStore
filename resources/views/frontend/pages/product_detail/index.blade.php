@@ -115,12 +115,12 @@
                 </div>
             </div>
             <!--  <div class="" style="margin-bottom: 10px">
-                        <h4 class="reviews-title"><b>Nội dung</b></h4>
-                        {!! $product->pro_content !!}
-                        @if ($product->pro_link)
+                            <h4 class="reviews-title"><b>Nội dung</b></h4>
+                            {!! $product->pro_content !!}
+                            @if ($product->pro_link)
     <iframe src="{{ $product->pro_link }}" width="100%" height="1000"></iframe>
     @endif
-                    </div> -->
+                        </div> -->
 
             @include('frontend.pages.product_detail.include._inc_content')
 
